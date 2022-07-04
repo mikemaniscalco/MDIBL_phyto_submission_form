@@ -43,9 +43,11 @@ server <- function(input, output, session) {
                             (total_rafter_grids/volume_of_rafter) * # counts per grid to counts per L
                             (resusp_volume/volume_filtered)))) %>% # factor of 
       mutate(monitor_names=paste0(last_name," ",first_name)) %>%
-      mutate(eventDate = as.POSIXct(paste(ymd(date,tz ="America/New_York"),as.character(gsub(".* ","",time)),
+      
+      mutate(eventDate = as.POSIXct(paste(ymd(date,tz ="America/New_York"),
+                                          as.character(gsub(".* ","",time)),
                                   format="%Y-%m-%d %H:%M:%S",
-                                  tz ="America/New_York")) %>%
+                                  tz ="America/New_York"))) %>%
       mutate(eventDate=strftime(eventDate , "%Y-%m-%dT%H:%M:%S%Z",tz = "Zulu")) %>%
       select(monitor_names,	eventDate,	rain_48h,	weather,	method,
              water_temp,	air_temp,	trans_asc,	trans_desc,	bottom_depth,
