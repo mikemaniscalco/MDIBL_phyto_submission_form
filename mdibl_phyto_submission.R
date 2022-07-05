@@ -5,6 +5,7 @@ library(janitor)
 library(googlesheets4)
 library(lubridate)
 df<-read_csv("demo_survey.csv")
+site_info <- read_csv("site_details.csv") 
 # df<- shinysurveys::teaching_r_questions
 
 ui <- fluidPage(
@@ -49,14 +50,26 @@ server <- function(input, output, session) {
                                   format="%Y-%m-%d %H:%M:%S",
                                   tz ="America/New_York"))) %>%
       mutate(eventDate=strftime(eventDate , "%Y-%m-%dT%H:%M:%S%Z",tz = "Zulu")) %>%
-      select(monitor_names,	eventDate,	rain_48h,	weather,	method,
+      separate(., col = site, 
+               into = c("locationID", 
+                        "site"),
+               sep = " ",
+               remove = T,
+               extra = "merge") %>%
+      left_join(., site_info, by=c("site","locationID")) %>%
+      mutate(Total_phytoplankton=sum(c_across((Alexandrium:Other_phytoplankton)))) %>%
+      mutate(Total_zooplankton=sum(c_across((Copepods:Other_zoos)))) %>%
+      # make a mean transparency column
+      # add additional columns/values for other necessary parameters 
+      select(monitor_names,	eventDate, site, locationID, decimalLatitude,
+             decimalLongitude, coordinateUncertaintyInMeters,	weather,	method,
              water_temp,	air_temp,	trans_asc,	trans_desc,	bottom_depth,
              salinity,	ph,	DO,	nutrient_vial_id,	
              Alexandrium, PN_small,	PN_large,	Dinophysis_acuminata,	Dinophsis_norvegica,
              Dinophsis_spp,	Prorocentrum_lima,	Prorocentrum_spp,	Karenia,
-             Margalefidinium_polykrikoides,	Other_diatoms,	Other_dinos,	Other_phytoplankton,
-             Copepods,	Other_zoos,	Comments)
-    
+             Margalefidinium_polykrikoides,	Other_diatoms,	Other_dinos,	Other_phytoplankton, Total_phytoplankton,
+             Copepods,	Other_zoos,	Total_zooplankton, Comments)
+
     
     sheet_append(ss ="https://docs.google.com/spreadsheets/d/1JGXLAvG_U9dWn7Ya_NorUU3mcgpi7aX2uanszfhXP8c/edit#gid=0",
                  sheet = "processed", data=response_data)

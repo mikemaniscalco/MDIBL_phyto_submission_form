@@ -3,7 +3,11 @@ First name,NA,text,first_name,NA,NA,TRUE
 Last name,NA,text,last_name,NA,NA,TRUE
 Date (YYYY-MM-DD),NA,text,date,NA,NA,TRUE
 Local time 24h (hh:mm:ss),NA,text,time,NA,NA,TRUE
-Rainfall total 48 h (millimeters),NA,numeric,rain_48h,NA,NA,TRUE
+Site,22D Bar Harbor Town Pier,select,site,NA,NA,TRUE
+Site,22G MDIBL Dock,select,site,NA,NA,TRUE
+Site,23A Bass Harbor,select,site,NA,NA,TRUE
+Site,22A Anchorage Alpha,select,site,NA,NA,TRUE
+Site,22B Anchorage Bravo,select,site,NA,NA,TRUE
 Weather,Clear,select,weather,NA,NA,TRUE
 Weather,Partly Cloudy,select,weather,NA,NA,TRUE
 Weather,Overcast,select,weather,NA,NA,TRUE
@@ -11,6 +15,22 @@ Weather,Drizzle,select,weather,NA,NA,TRUE
 Weather,Rain,select,weather,NA,NA,TRUE
 Weather,Fog,select,weather,NA,NA,TRUE
 Weather,Snow,select,weather,NA,NA,TRUE
+Wind speed (relative),0 Calm,select,wind_speed_descriptive,NA,NA,TRUE
+Wind speed (relative),1 Light air,select,wind_speed_descriptive,NA,NA,TRUE
+Wind speed (relative),2 Light breeze,select,wind_speed_descriptive,NA,NA,TRUE
+Wind speed (relative),3 Gentle breeze,select,wind_speed_descriptive,NA,NA,TRUE
+Wind speed (relative),4 Moderate breeze,select,wind_speed_descriptive,NA,NA,TRUE
+Wind speed (relative),5 Fresh breeze,select,wind_speed_descriptive,NA,NA,TRUE
+Wind speed (relative),6 Strong breeze,select,wind_speed_descriptive,NA,NA,TRUE
+Wind speed (relative),7 Near gale,select,wind_speed_descriptive,NA,NA,TRUE
+Wind speed (relative),8 Gale,select,wind_speed_descriptive,NA,NA,TRUE
+Wind speed (relative),9 Severe gale,select,wind_speed_descriptive,NA,NA,TRUE
+Wind speed (relative),10 Storm,select,wind_speed_descriptive,NA,NA,TRUE
+Wind speed (relative),11 Violent storm,select,wind_speed_descriptive,NA,NA,TRUE
+Wind speed (relative),12 Hurricane,select,wind_speed_descriptive,NA,NA,TRUE
+Current (relative),slow,select,water_current_descriptive,NA,NA,TRUE
+Current (relative),medium,select,water_current_descriptive,NA,NA,TRUE
+Current (relative),rapid,select,water_current_descriptive,NA,NA,TRUE
 Phytoplanton Sample Method,Filter,select,method,NA,NA,TRUE
 Phytoplanton Sample Method,Tow,select,method,NA,NA,TRUE
 Water temperature (degrees C),NA,numeric,water_temp,NA,NA,TRUE
