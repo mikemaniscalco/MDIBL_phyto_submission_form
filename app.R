@@ -6,7 +6,9 @@ library(dplyr)
 # library(googlesheets4)
 # library(lubridate)
 # https://mastering-shiny.org/scaling-packaging.html notes for correcting format before deploying
-
+rsconnect::setAccountInfo(name='cehlatmdibl',
+                          token='E6EE2A0BA554E4D36E419A992BA76EE2',
+                          secret='QEF66I0FQDRKSlktITwL2jYpSEAyC5o3RT1mSv1l')
 load("core_data.RData")
 
 phytoLog_UI <- fluidPage(
