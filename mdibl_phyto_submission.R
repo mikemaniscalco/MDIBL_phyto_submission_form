@@ -7,8 +7,6 @@ library(dplyr)
 # library(lubridate)
 # https://mastering-shiny.org/scaling-packaging.html notes for correcting format before deploying
 
-## Add expanding field for entry of site with other expanding for write in of site name and GPS
-
 load("core_data.RData")
 
 phytoLog_UI <- fluidPage(
