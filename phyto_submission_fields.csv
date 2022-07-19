@@ -1,0 +1,88 @@
+﻿question,option,input_type,input_id,dependence,dependence_value,required
+First name,NA,text,first_name,NA,NA,TRUE
+Last name,NA,text,last_name,NA,NA,TRUE
+Date (YYYY-MM-DD),NA,text,date,NA,NA,TRUE
+Local time 24h (hh:mm:ss),NA,text,time,NA,NA,TRUE
+Site,Bar_Harbor_Town_Pier_22D,select,locationID,NA,NA,TRUE
+Site,MDIBL_Dock_22G,select,locationID,NA,NA,TRUE
+Site,Bass_Harbor_21B,select,locationID,NA,NA,TRUE
+Site,Anchorage_Alpha_22A,select,locationID,NA,NA,TRUE
+Site,Anchorage_Bravo_22B,select,locationID,NA,NA,TRUE
+Site,Other,select,locationID,NA,NA,TRUE
+Site name,NA,text,undefined_locationID,locationID,Other,TRUE
+Other site decimal latitude,NA,text,decimalLatitude_other,NA,NA,FALSE
+Other site decimal longitude,NA,text,decimalLongitude_other,NA,NA,FALSE
+Tide stage,In (rising),select,tide_stage,NA,NA,TRUE
+Tide stage,Out (falling),select,tide_stage,NA,NA,TRUE
+Tide stage,Slack,select,tide_stage,NA,NA,TRUE
+Time of nearest low tide (hh:mm:ss),NA,text,time_low_tide,NA,NA,TRUE
+Time of nearest high tide (hh:mm:ss),NA,text,time_high_tide,NA,NA,TRUE
+Weather,Clear,select,weather,NA,NA,TRUE
+Weather,Partly Cloudy,select,weather,NA,NA,TRUE
+Weather,Overcast,select,weather,NA,NA,TRUE
+Weather,Drizzle,select,weather,NA,NA,TRUE
+Weather,Rain,select,weather,NA,NA,TRUE
+Weather,Fog,select,weather,NA,NA,TRUE
+Weather,Snow,select,weather,NA,NA,TRUE
+48h rain total (mm),NA,numeric,rainfall_mm,NA,NA,FALSE
+Wind speed (relative),0 Calm,select,wind_description,NA,NA,TRUE
+Wind speed (relative),1 Light air,select,wind_description,NA,NA,TRUE
+Wind speed (relative),2 Light breeze,select,wind_description,NA,NA,TRUE
+Wind speed (relative),3 Gentle breeze,select,wind_description,NA,NA,TRUE
+Wind speed (relative),4 Moderate breeze,select,wind_description,NA,NA,TRUE
+Wind speed (relative),5 Fresh breeze,select,wind_description,NA,NA,TRUE
+Wind speed (relative),6 Strong breeze,select,wind_description,NA,NA,TRUE
+Wind speed (relative),7 Near gale,select,wind_description,NA,NA,TRUE
+Wind speed (relative),8 Gale,select,wind_description,NA,NA,TRUE
+Wind speed (relative),9 Severe gale,select,wind_description,NA,NA,TRUE
+Wind speed (relative),10 Storm,select,wind_description,NA,NA,TRUE
+Wind speed (relative),11 Violent storm,select,wind_description,NA,NA,TRUE
+Wind speed (relative),12 Hurricane,select,wind_description,NA,NA,TRUE
+Wind direction,None,select,wind_direction,NA,NA,TRUE
+Wind direction,North,select,wind_direction,NA,NA,TRUE
+Wind direction,Northeast,select,wind_direction,NA,NA,TRUE
+Wind direction,East,select,wind_direction,NA,NA,TRUE
+Wind direction,Southeast,select,wind_direction,NA,NA,TRUE
+Wind direction,South,select,wind_direction,NA,NA,TRUE
+Wind direction,Southwest,select,wind_direction,NA,NA,TRUE
+Wind direction,West,select,wind_direction,NA,NA,TRUE
+Wind direction,Northwest,select,wind_direction,NA,NA,TRUE
+Wind speed (knots),NA,numeric,wind_speed_knots,NA,NA,TRUE
+Water surface,Calm,select,water_surface,NA,NA,TRUE
+Water surface,Rough,select,water_surface,NA,NA,TRUE
+Current (relative),slow,select,water_current,NA,NA,TRUE
+Current (relative),medium,select,water_current,NA,NA,TRUE
+Current (relative),rapid,select,water_current,NA,NA,TRUE
+Phytoplanton Sample Method,Filter,select,sampling_method,NA,NA,TRUE
+Phytoplanton Sample Method,Tow,select,sampling_method,NA,NA,TRUE
+Water temperature (degrees C),NA,numeric,water_temp,NA,NA,TRUE
+Air temperature (degrees C),NA,numeric,air_temp,NA,NA,TRUE
+Ascending transparency (m),NA,numeric,ascending_transparency,NA,NA,TRUE
+Descending transparency (m),NA,numeric,descending_transparency,NA,NA,TRUE
+Water depth (m),NA,numeric,bottom_depth,NA,NA,TRUE
+Salinity (ppt),NA,numeric,salinity_ppt,NA,NA,TRUE
+pH,NA,numeric,pH,NA,NA,TRUE
+Dissolved Oxygen (ppt),NA,numeric,DOavg_ppm,NA,NA,TRUE
+Nutrient vial ID,NA,numeric,nutrient_vial_id,NA,NA,TRUE
+Volume filtered (L),NA,numeric,volume_filtered,NA,NA,TRUE
+Resuspension volume (L),NA,numeric,resusp_volume,NA,NA,TRUE
+Dilution factor ,NA,numeric,dilution_factor,NA,NA,TRUE
+Alexandrium (200 grids),NA,numeric,Alexandrium,NA,NA,TRUE
+Scrippsiella (200 grids),NA,numeric,Scrippsiella,NA,NA,TRUE
+Gonyaulax (200 grids),NA,numeric,Gonyaulax,NA,NA,TRUE
+Pseudo-nitzschia small (width <2.5 um; 200 grids),NA,numeric,Pseudo_nitzschia_small,NA,NA,TRUE
+Pseudo-nitzschia large (width >2.5 um; 200 grids),NA,numeric,Pseudo_nitzschia_large,NA,NA,TRUE
+Dinophysis acuminata (200 grids),NA,numeric,Dinophysis_acuminata,NA,NA,TRUE
+Dinophysis norvegica (200 grids),NA,numeric,Dinophysis_norvegica,NA,NA,TRUE
+Dinophysis spp. (200 grids),NA,numeric,Dinophysis_spp,NA,NA,TRUE
+Prorocentrum lima (200 grids),NA,numeric,Prorocentrum_lima,NA,NA,TRUE
+Prorocentrum spp. (200 grids),NA,numeric,Prorocentrum_spp,NA,NA,TRUE
+Karenia (200 grids),NA,numeric,Karenia,NA,NA,TRUE
+Margalefidinium polykrikoides (200 grids),NA,numeric,Margalefidinium_polykrikoides,NA,NA,TRUE
+Other and unknown diatoms (50 grids),NA,numeric,Other_diatoms,NA,NA,TRUE
+Other and unkown dinoflagellates (50 grids),NA,numeric,Other_dinoflagellates,NA,NA,TRUE
+Other and unkown phytoplankton (50 grids),NA,numeric,Other_phytoplankton,NA,NA,TRUE
+Copepods (200 grids),NA,numeric,Copepods,NA,NA,TRUE
+Other zooplankton (200 grids),NA,numeric,Other_zoos,NA,NA,TRUE
+Date emailed to DMR (YYYY-MM-DD),NA,text,Date_emailed,NA,NA,TRUE
+Comments and notes,NA,text,Comments,NA,NA,FALSE
