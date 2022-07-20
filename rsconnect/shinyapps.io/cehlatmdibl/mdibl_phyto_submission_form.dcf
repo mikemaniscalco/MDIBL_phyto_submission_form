@@ -1,11 +1,14 @@
 name: mdibl_phyto_submission_form
-title:
+title: mdibl_phyto_submission_form_title
 username:
 account: cehlatmdibl
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 6662629
-bundleId: 6111661
+bundleId: 6113868
 url: https://cehlatmdibl.shinyapps.io/mdibl_phyto_submission_form/
-when: 1658234053.19271
-lastSyncTime: 1658234053.19272
+when: 1658278264.63936
+lastSyncTime: 1658278264.6394
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .secrets/d67d4efb39eee449dc62932502fd8a0f_mmaniscalco@ucsb.edu|phyto_submission_fields.csv|source_data/.DS_Store|source_data/site_details.csv|source_data/tax_table.csv

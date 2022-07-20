@@ -1,14 +1,7 @@
 library(shiny)
 library(dplyr)
-# library(shinysurveys)
-# library(tidyverse)
-# library(janitor)
-# library(googlesheets4)
-# library(lubridate)
-# https://mastering-shiny.org/scaling-packaging.html notes for correcting format before deploying
-rsconnect::setAccountInfo(name='cehlatmdibl',
-                          token='E6EE2A0BA554E4D36E419A992BA76EE2',
-                          secret='QEF66I0FQDRKSlktITwL2jYpSEAyC5o3RT1mSv1l')
+
+##  followed these directions for setting up google sheets API for .json gs4_auth key
 load("core_data.RData")
 
 phytoLog_UI <- fluidPage(
@@ -29,7 +22,8 @@ phytoLog_Server <- function(input, output, session) {
       data.frame()
     rownames(response_data) <- NULL
     
-    print(response_data)
+    googlesheets4::gs4_auth(path = '.secrets/enduring-coil-349821-3832e38b5b43.json')
+
     ss <- googlesheets4::gs4_get("https://docs.google.com/spreadsheets/d/1JGXLAvG_U9dWn7Ya_NorUU3mcgpi7aX2uanszfhXP8c/edit#gid=641716790")
     googlesheets4::sheet_append(ss, sheet = "raw",data=response_data)
     
@@ -37,18 +31,25 @@ phytoLog_Server <- function(input, output, session) {
     total_rafter_grids=1000 # per slide
     grids_counted=200 # per slide
     response_data <- response_data %>%
-      dplyr::mutate(across(volume_filtered:Other_zoos, 
+      dplyr::mutate(across(volume_filtered:Other_zooplankton, 
                            ~as.numeric(.x))) %>% 
-      dplyr::mutate(across(Alexandrium:Other_zoos, 
+      dplyr::mutate(across(Alexandrium:Other_zooplankton, 
                            ~.x* ((1/grids_counted) *   #convert counts to counts per grid
                                    (total_rafter_grids/volume_of_rafter) * # counts per grid to counts per L
                                    (resusp_volume/volume_filtered)))) %>% # factor of 
       dplyr::mutate(monitor_names=paste0(last_name," ",first_name)) %>%
-      dplyr::mutate(eventDate = as.POSIXct(paste(lubridate::ymd(date,tz ="America/New_York"),
+      dplyr::mutate(eventDate = as.POSIXct(paste(lubridate::ymd(date, tz ="America/New_York"),
                                                  as.character(gsub(".* ","",time)),
                                                  format="%Y-%m-%d %H:%M:%S",
-                                                 tz ="America/New_York"))) %>%
-      dplyr::mutate(eventDate=strftime(eventDate, "%Y-%m-%dT%H:%M:%S%Z",tz = "Zulu")) %>%
+                                                 tz ="UTC")),
+                    time_high_tide = as.POSIXct(paste(lubridate::ymd(date, tz ="America/New_York"),
+                                                 as.character(gsub(".* ","",time_high_tide)),
+                                                 format="%Y-%m-%d %H:%M:%S",
+                                                 tz ="UTC")),
+                    time_low_tide = as.POSIXct(paste(lubridate::ymd(date, tz ="America/New_York"),
+                                                     as.character(gsub(".* ","",time_low_tide)),
+                                                     format="%Y-%m-%d %H:%M:%S",
+                                                     tz ="UTC"))) %>%
       dplyr::left_join(., site_info, by="locationID") %>%
       dplyr::mutate(tide_stage=stringr::word(tide_stage, 1),
                     Other_diatoms=Other_diatoms*4,
@@ -58,7 +59,7 @@ phytoLog_Server <- function(input, output, session) {
                     decimalLatitude= ifelse(locationID=="Other",decimalLatitude_other,decimalLatitude),
                     decimalLongitude= ifelse(locationID=="Other",decimalLongitude_other,decimalLongitude)) %>%
       dplyr::mutate(Total_phytoplankton=sum(c_across((Alexandrium:Other_phytoplankton)))) %>%
-      dplyr::mutate(Total_zooplankton=sum(c_across((Copepods:Other_zoos)))) %>%
+      dplyr::mutate(Total_zooplankton=sum(c_across((Copepods:Other_zooplankton)))) %>%
       tibble::add_column(countryCode="US") %>%
       dplyr::mutate(eventID= paste(locationID, 
                                    strftime(eventDate , "%Y-%m-%dT%H:%M:%S%Z", tz = "Zulu"), 
@@ -70,7 +71,9 @@ phytoLog_Server <- function(input, output, session) {
       dplyr::select(id, eventID, eventDate, locationID, decimalLatitude,
                     decimalLongitude, coordinateUncertaintyInMeters,	geodeticDatum, countryCode, 
                     monitor_names, weather, sampling_method,
-                    water_temp, air_temp,	
+                    water_temp, air_temp,	tide_stage, time_high_tide, time_low_tide,
+                    rainfall_mm, wind_description,	wind_direction,	wind_speed_knots,	water_surface,
+                    water_current,
                     ascending_transparency, descending_transparency,	transparency_depth_mean,
                     bottom_depth,
                     salinity_ppt, pH, DOavg_ppm,	nutrient_vial_id,	
@@ -80,7 +83,7 @@ phytoLog_Server <- function(input, output, session) {
                     Dinophysis_spp,	Prorocentrum_lima,	Prorocentrum_spp,	Karenia,
                     Margalefidinium_polykrikoides,	Other_diatoms, Other_dinoflagellates,	
                     Other_phytoplankton, Total_phytoplankton,
-                    Copepods,	Other_zoos,	Total_zooplankton, Comments) 
+                    Copepods,	Other_zooplankton,	Total_zooplankton, Comments) 
     
     googlesheets4::sheet_append(ss, sheet = "processed", data=response_data)
     
@@ -88,7 +91,7 @@ phytoLog_Server <- function(input, output, session) {
     ##check and maybe remove extra columns
     
     response_data <- response_data %>%
-      select(-c(Copepods, Other_zoos, Total_zooplankton)) %>%
+      select(-c(Copepods, Other_zooplankton, Total_zooplankton)) %>%
       rowwise() %>%
       tidyr::pivot_longer(., cols=(Alexandrium:Total_phytoplankton),
                           names_to = "organismName",
@@ -109,7 +112,8 @@ phytoLog_Server <- function(input, output, session) {
     
     showModal(modalDialog(
       title = "Your submission has been saved."
-    ))
+    )
+    )
   })
 }
 
