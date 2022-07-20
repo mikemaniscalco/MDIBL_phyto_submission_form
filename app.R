@@ -7,7 +7,7 @@ load("core_data.RData")
 phytoLog_UI <- fluidPage(
   shinysurveys::surveyOutput(df = df,
                              survey_title = "MDIBL   HAB monitoring",
-                             survey_description = "Phytoplankton counts and environmental variable log")
+                             survey_description = "If grids counted differ from entry field then please convert to the equivalent counts per designated # of grids")
 )
 
 phytoLog_Server <- function(input, output, session) {
