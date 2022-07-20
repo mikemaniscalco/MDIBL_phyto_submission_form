@@ -67,6 +67,16 @@ phytoLog_Server <- function(input, output, session) {
       dplyr::mutate(id= paste("MDIBL-habs", locationID, 
                               strftime(eventDate , "%Y-%m-%dT%H:%M:%S%Z",tz = "Zulu"), 
                               sep="_")) %>% 
+      mutate(wind_direction=str_replace(wind_direction, "None","999"),
+             wind_direction=str_replace(wind_direction, "Northwest", "315"),
+             wind_direction=str_replace(wind_direction, "Northeast", "35"),
+             wind_direction=str_replace(wind_direction, "Southeast", "135"),
+             wind_direction=str_replace(wind_direction, "Southwest", "225"),
+             wind_direction=str_replace(wind_direction, "West", "270"),
+             wind_direction=str_replace(wind_direction, "East", "90"),
+             wind_direction=str_replace(wind_direction, "North", "0"),
+             wind_direction=str_replace(wind_direction, "South", "90"),
+             wind_direction=as.numeric(wind_direction)) %>%
       tibble::add_column(geodeticDatum="EPSG:4326 WGS84") %>%
       dplyr::select(id, eventID, eventDate, locationID, decimalLatitude,
                     decimalLongitude, coordinateUncertaintyInMeters,	geodeticDatum, countryCode, 
