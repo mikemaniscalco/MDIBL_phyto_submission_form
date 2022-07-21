@@ -55,6 +55,7 @@ Current (relative),medium,select,water_current,NA,NA,TRUE
 Current (relative),rapid,select,water_current,NA,NA,TRUE
 Phytoplanton Sample Method,Filter,select,sampling_method,NA,NA,TRUE
 Phytoplanton Sample Method,Tow,select,sampling_method,NA,NA,TRUE
+Tow depth,NA,numeric,maximumDepthInMeters,sampling_method,Tow,TRUE
 Water temperature (degrees C),NA,numeric,water_temp,NA,NA,TRUE
 Air temperature (degrees C),NA,numeric,air_temp,NA,NA,TRUE
 Ascending transparency (m),NA,numeric,ascending_transparency,NA,NA,TRUE

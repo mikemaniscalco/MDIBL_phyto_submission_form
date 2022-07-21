@@ -5,7 +5,7 @@ library(dplyr)
 load("core_data.RData")
 
 phytoLog_UI <- fluidPage(
-  shinysurveys::surveyOutput(df = df,
+shinysurveys::surveyOutput(df = df,
                              survey_title = "MDIBL   HAB monitoring",
                              survey_description = "If grids counted differ from entry field then please convert to the equivalent counts per designated # of grids")
 )
@@ -67,57 +67,76 @@ phytoLog_Server <- function(input, output, session) {
       dplyr::mutate(id= paste("MDIBL-habs", locationID, 
                               strftime(eventDate , "%Y-%m-%dT%H:%M:%S%Z",tz = "Zulu"), 
                               sep="_")) %>% 
-      mutate(wind_direction=str_replace(wind_direction, "None","999"),
-             wind_direction=str_replace(wind_direction, "Northwest", "315"),
-             wind_direction=str_replace(wind_direction, "Northeast", "35"),
-             wind_direction=str_replace(wind_direction, "Southeast", "135"),
-             wind_direction=str_replace(wind_direction, "Southwest", "225"),
-             wind_direction=str_replace(wind_direction, "West", "270"),
-             wind_direction=str_replace(wind_direction, "East", "90"),
-             wind_direction=str_replace(wind_direction, "North", "0"),
-             wind_direction=str_replace(wind_direction, "South", "90"),
+      dplyr::mutate(wind_direction=stringr::str_replace(wind_direction, "None","999"),
+             wind_direction=stringr::str_replace(wind_direction, "Northwest", "315"),
+             wind_direction=stringr::str_replace(wind_direction, "Northeast", "35"),
+             wind_direction=stringr::str_replace(wind_direction, "Southeast", "135"),
+             wind_direction=stringr::str_replace(wind_direction, "Southwest", "225"),
+             wind_direction=stringr::str_replace(wind_direction, "West", "270"),
+             wind_direction=stringr::str_replace(wind_direction, "East", "90"),
+             wind_direction=stringr::str_replace(wind_direction, "North", "0"),
+             wind_direction=stringr::str_replace(wind_direction, "South", "90"),
              wind_direction=as.numeric(wind_direction)) %>%
+      tibble::add_column(minimumDepthInMeters=NA) %>%
+      dplyr::mutate(maximumDepthInMeters= ifelse(maximumDepthInMeters=="HIDDEN-QUESTION",
+                                                 NA,maximumDepthInMeters),
+                    minimumDepthInMeters=ifelse(sampling_method=="Tow",
+                                                0,
+                                                NA)) %>%
       tibble::add_column(geodeticDatum="EPSG:4326 WGS84") %>%
-      dplyr::select(id, eventID, eventDate, locationID, decimalLatitude,
-                    decimalLongitude, coordinateUncertaintyInMeters,	geodeticDatum, countryCode, 
-                    monitor_names, weather, sampling_method,
+      tibble::add_column(basisOfRecord="HumanObservation") %>%
+      tibble::add_column(organismQuantityType="Cells per L") %>%
+      dplyr::select(id, eventID, eventDate, eventRemarks=Comments, 
+                    locationID, decimalLatitude,
+                    decimalLongitude, coordinateUncertaintyInMeters,	
+                    geodeticDatum, countryCode, 
+                    monitor_names, weather, sampling_method, minimumDepthInMeters,maximumDepthInMeters,
                     water_temp, air_temp,	tide_stage, time_high_tide, time_low_tide,
                     rainfall_mm, wind_description,	wind_direction,	wind_speed_knots,	water_surface,
                     water_current,
                     ascending_transparency, descending_transparency,	transparency_depth_mean,
                     bottom_depth,
-                    salinity_ppt, pH, DOavg_ppm,	nutrient_vial_id,	
+                    salinity_ppt, pH, DOavg_ppm,	nutrient_vial_id,	basisOfRecord, organismQuantityType,
                     Alexandrium, Scrippsiella, Gonyaulax, Pseudo_nitzschia_small,
                     Pseudo_nitzschia_large,
                     Dinophysis_acuminata, Dinophysis_norvegica,
                     Dinophysis_spp,	Prorocentrum_lima,	Prorocentrum_spp,	Karenia,
                     Margalefidinium_polykrikoides,	Other_diatoms, Other_dinoflagellates,	
                     Other_phytoplankton, Total_phytoplankton,
-                    Copepods,	Other_zooplankton,	Total_zooplankton, Comments) 
-    
+                    Copepods,	Other_zooplankton,	Total_zooplankton) 
     googlesheets4::sheet_append(ss, sheet = "processed", data=response_data)
     
-    ### Occurrence
-    ##check and maybe remove extra columns
     
-    response_data <- response_data %>%
-      select(-c(Copepods, Other_zooplankton, Total_zooplankton)) %>%
-      rowwise() %>%
+    ### ammend temp long files for shiny visualization
+    df_phyto <- response_data %>%
+      dplyr::rowwise() %>%
       tidyr::pivot_longer(., cols=(Alexandrium:Total_phytoplankton),
                           names_to = "organismName",
-                          values_to = "organismQuantity",) %>%
-      dplyr::left_join(.,tax_table, by="organismName") %>%
-      tibble::add_column(basisOfRecord="HumanObservation", .after="id") %>%
-      tibble::add_column(organismQuantityType= "Cells per L", .after="organismQuantity") %>% 
-      dplyr::mutate(organismQuantity=ifelse(is.na(organismQuantity)==T, 0, organismQuantity)) %>%
-      dplyr::mutate(occurrenceID=paste(strftime(eventDate, "%Y-%m-%dT%H:%M:%S%Z", tz = "Zulu"), organismName, sep="_")) %>%
-      dplyr::mutate(occurrenceStatus= ifelse(organismQuantity>0, "present", "absent")) %>%
-      dplyr::select(id, basisOfRecord, organismName, organismQuantity, organismQuantityType,
-                    occurrenceID, occurrenceStatus, scientificName, scientificNameID, taxonID, kingdom) %>%
-      dplyr::filter_at(vars(occurrenceStatus), all_vars(!is.na(.))) %>%
-      tibble::add_column(data_historic = "False")
+                          values_to = "organismQuantity") %>%
+      dplyr::left_join(., tax_table, by="organismName") %>%
+      dplyr::filter(organismQuantityType=="Cells per L") %>%
+      dplyr::mutate(day=strftime(eventDate, "%Y-%m-%d", tz = "America/New_York")) %>%
+      dplyr::filter_at(vars(organismQuantity), all_vars(!is.na(.))) %>%
+      dplyr::select(day, locationID,  organismName, organismQuantity)
+    googlesheets4::sheet_append(ss, sheet = "occurrence_temp", data=df_phyto)
     
-    googlesheets4::sheet_append(ss,  sheet = "occurrence_temp", data=response_data)
+    
+    phyto_extended <- response_data %>%
+      dplyr::relocate(.,c(salinity_ppt,DOavg_ppm,transparency_depth_mean), .after="water_temp") %>%
+      dplyr::select(-eventRemarks, -nutrient_vial_id, 
+                    -c(Alexandrium:Total_phytoplankton)) %>% 
+      tidyr::pivot_longer(., 
+                          cols=(water_temp:transparency_depth_mean),
+                          names_to = "measurementType",
+                          values_to = "measurementValue",
+                          values_transform = list(measurementValue = as.character)) %>%
+      dplyr::filter(!is.na(measurementValue)) %>%
+      dplyr::mutate(day=strftime(eventDate, "%Y-%m-%d", tz = "America/New_York"), 
+                    measurementValue=as.numeric(measurementValue)) %>%
+      dplyr::select(.,day, locationID,	measurementType, 
+                    measurementValue) %>%
+      dplyr::arrange(day)
+    googlesheets4::sheet_append(ss, sheet = "extended_temp", data=phyto_extended)
     
     
     showModal(modalDialog(
